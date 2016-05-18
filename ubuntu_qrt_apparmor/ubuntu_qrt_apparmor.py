@@ -1,5 +1,6 @@
 import os
 import platform
+import time
 from autotest.client import test, utils
 
 class ubuntu_qrt_apparmor(test.test):
@@ -47,6 +48,12 @@ class ubuntu_qrt_apparmor(test.test):
         self.results = utils.system_output(cmd, retain_output=True)
 
     def initialize(self):
+        # Yes, the following is a horrible hack.
+        #
+        utils.system_output('apt-get update', retain_output=True)
+        time.sleep(60)
+        utils.system_output('apt-get update', retain_output=True)
+
         self.install_required_pkgs()
         self.job.require_gcc()
 
