@@ -6,9 +6,6 @@ import platform
 class ubuntu_lxc(test.test):
     version = 1
 
-    def initialize(self):
-        pass
-
     def install_required_pkgs(self):
         arch   = platform.processor()
         series = platform.dist()[2]
@@ -17,7 +14,7 @@ class ubuntu_lxc(test.test):
             'lxc-tests'
         ]
 
-        cmd = 'apt-get install --yes --force-yes' + ' '.join(pkgs)
+        cmd = 'apt-get install --yes --force-yes ' + ' '.join(pkgs)
         self.results = utils.system_output(cmd, retain_output=True)
 
     def initialize(self):
