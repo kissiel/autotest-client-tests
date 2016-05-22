@@ -22,7 +22,7 @@ class rtc(test.test):
         self.results = utils.system_output(cmd, retain_output=True)
 
     def initialize(self):
-        self.initialize_required_pkgs()
+        self.install_required_pkgs()
         self.job.require_gcc()
 
     def setup(self):

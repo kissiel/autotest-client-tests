@@ -11,7 +11,7 @@ class ubuntu_cts_kernel(test.test):
         pkgs = [
             'coreutils', 'apparmor', 'iproute2', 'openvswitch-switch',
         ]
-        pkgs.append('linux-tools-%s' % platform.uname[2])
+        pkgs.append('linux-tools-%s' % platform.uname()[2])
 
         cmd = 'apt-get install --yes --force-yes ' + ' '.join(pkgs)
         self.results = utils.system_output(cmd, retain_output=True)

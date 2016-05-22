@@ -7,7 +7,7 @@ from autotest.client import test, utils
 class aiostress(test.test):
     version = 3
 
-    def install_requierd_pkgs(self):
+    def install_required_pkgs(self):
         arch   = platform.processor()
         series = platform.dist()[2]
 
