@@ -81,7 +81,7 @@ class MapsTests(unittest.TestCase):
 
         info = os.stat('maps-helper-setuid')
         self.assertEqual(info.st_uid, 0, "maps-helper-setuid not owned by root")
-        self.assertEqual(info.st_mode & 04000, 04000, "maps-helper-setuid not setuid")
+        self.assertEqual(info.st_mode & 0o4000, 0o4000, "maps-helper-setuid not setuid")
 
     def test_30_setuid_before_dropping_privs(self):
         '''Can not read setuid process before priv-dropping to our uid'''
