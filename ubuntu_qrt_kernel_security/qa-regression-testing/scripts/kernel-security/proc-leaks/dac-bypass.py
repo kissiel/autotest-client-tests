@@ -21,9 +21,9 @@ def dump_auxv(blob):
     auxv = struct.unpack('@%dL' % (len(blob)/len(struct.pack('@L',0))), blob)
     while auxv[0] != 0:
         if auxv[0] == 7:
-            print "AT_BASE:   0x%x" % (auxv[1])
+            print("AT_BASE:   0x%x" % (auxv[1]))
         if auxv[0] == 25:
-            print "AT_RANDOM: 0x%x" % (auxv[1])
+            print("AT_RANDOM: 0x%x" % (auxv[1]))
         auxv = auxv[2:]
 
 # Allow child/parent synchronization to avoid start-up race.
@@ -55,9 +55,9 @@ if pid == 0:
                     if name == 'auxv':
                         dump_auxv(saw)
                     else:
-                        print saw
+                        print(saw)
                     last[name] = saw
-    except Exception, o:
+    except Exception as o:
         if o.errno == errno.EEXIST or o.errno == errno.EPERM:
             # Target quit or wasn't permitted to access the file to
             # begin with, so okay.
