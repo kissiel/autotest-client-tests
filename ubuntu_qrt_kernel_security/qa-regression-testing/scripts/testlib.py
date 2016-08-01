@@ -201,7 +201,7 @@ def random_string(length,lower=False):
     length.'''
 
     s = ''
-    selection = string.letters
+    selection = string.ascii_letters
     if lower:
         selection = string.lowercase
     maxind = len(selection)-1
