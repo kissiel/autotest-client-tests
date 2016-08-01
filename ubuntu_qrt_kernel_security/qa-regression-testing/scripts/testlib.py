@@ -403,11 +403,11 @@ def cmd(command, input = None, stderr = subprocess.STDOUT, stdout = subprocess.P
     out, outerr = sp.communicate(input)
     # Handle redirection of stdout
     if out is None:
-        out = ''
+        out = b''
     # Handle redirection of stderr
     if outerr is None:
-        outerr = ''
-    return [sp.returncode, out + outerr]
+        outerr = b''
+    return [sp.returncode, out.decode(sys.stdout.encoding) + outerr.decode(sys.stderr.encoding)]
 
 def cmd_pipe(command1, command2, input = None, stderr = subprocess.STDOUT, stdin = None):
     '''Try to pipe command1 into command2.'''
@@ -857,7 +857,7 @@ class TestlibManager(object):
         if not os.path.exists('/usr/bin/lsb_release') and not os.path.exists('/bin/lsb_release'):
             raise OSError("Please install 'lsb-release'")
         for line in subprocess.Popen(['lsb_release','-a'],stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()[0].splitlines():
-            field, value = line.split(':',1)
+            field, value = line.decode(sys.stdout.encoding).split(':',1)
             value=value.strip()
             field=field.strip()
             # Convert numerics
