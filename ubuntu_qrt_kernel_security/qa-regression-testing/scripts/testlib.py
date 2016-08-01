@@ -19,6 +19,7 @@
 
 '''Common classes and functions for package tests.'''
 
+from __future__ import print_function
 import string, random, crypt, subprocess, pwd, grp, time, unittest, tempfile, shutil, os, os.path, re, glob
 import sys, socket, gzip
 
@@ -179,20 +180,20 @@ def timeout(secs, f, *args):
 
 def require_nonroot():
     if os.geteuid() == 0:
-        print >>sys.stderr, "This series of tests should be run as a regular user with sudo access, not as root."
+        print("This series of tests should be run as a regular user with sudo access, not as root.", file=sys.stderr)
         sys.exit(1)
 
 def require_root():
     if os.geteuid() != 0:
-        print >>sys.stderr, "This series of tests should be run with root privileges (e.g. via sudo)."
+        print("This series of tests should be run with root privileges (e.g. via sudo).", file=sys.stderr)
         sys.exit(1)
 
 def require_sudo():
     if os.geteuid() != 0 or os.environ.get('SUDO_USER', None) is None:
-        print >>sys.stderr, "This series of tests must be run under sudo."
+        print("This series of tests must be run under sudo.", file=sys.stderr)
         sys.exit(1)
     if os.environ['SUDO_USER'] == 'root':
-        print >>sys.stderr, 'Please run this test using sudo from a regular user. (You ran sudo from root.)'
+        print('Please run this test using sudo from a regular user. (You ran sudo from root.)', file=sys.stderr)
         sys.exit(1)
 
 def random_string(length,lower=False):
@@ -594,7 +595,7 @@ def prepare_source(source, builder, cached_src, build_src, patch_system):
         rc, report = cmd(['apt-get','source',source])
         assert (rc == 0)
         shutil.copytree(build_src, cached_src)
-        print "(unpacked %s)" % os.path.basename(glob.glob('%s_*.dsc' % source)[0]),
+        print("(unpacked %s)" % os.path.basename(glob.glob('%s_*.dsc' % source)[0]), end=' ')
 
 
     unpacked_dir = os.path.join(build_src, glob.glob('%s-*' % source)[0])
@@ -720,7 +721,7 @@ def is_kdeinit_running():
     # check for it.
     rc, report = cmd(['ps', 'x'])
     if 'kdeinit4 Running' not in report:
-        print >>sys.stderr, ("kdeinit not running (you may start/stop any KDE application then run this script again)")
+        print(("kdeinit not running (you may start/stop any KDE application then run this script again)"), file=sys.stderr)
         return False
     return True
 
@@ -730,7 +731,7 @@ def get_pkgconfig_flags(libs=[]):
     rc, pkg_config = cmd(['pkg-config', '--cflags', '--libs'] + libs)
     expected = 0
     if rc != expected:
-        print >>sys.stderr, 'Got exit code %d, expected %d\n' % (rc, expected)
+        print('Got exit code %d, expected %d\n' % (rc, expected), file=sys.stderr)
     assert(rc == expected)
     return pkg_config.split()
 
@@ -739,7 +740,7 @@ def cap_to_name(cap_num):
     rc, output = cmd(['capsh', '--decode=%x' % cap_num])
     expected = 0
     if rc != expected:
-        print >>sys.stderr, 'capsh: got exit code %d, expected %d\n' % (rc, expected)
+        print('capsh: got exit code %d, expected %d\n' % (rc, expected), file=sys.stderr)
     cap_name = output.strip().split('=')[1]
     return cap_name
 
@@ -933,14 +934,14 @@ class TestlibManager(object):
             kernel = self.kernel_version_ubuntu
             if kernel != self.kernel_version_signature:
                 kernel += " (%s)" % (self.kernel_version_signature)
-            print >>sys.stdout, "Running test: '%s' distro: '%s %.2f' kernel: '%s' arch: '%s' uid: %d/%d SUDO_USER: '%s')" % ( \
+            print("Running test: '%s' distro: '%s %.2f' kernel: '%s' arch: '%s' uid: %d/%d SUDO_USER: '%s')" % ( \
                 sys.argv[0],
                 self.lsb_release['Distributor ID'],
                 self.lsb_release['Release'],
                 kernel,
                 self.dpkg_arch,
                 os.geteuid(), os.getuid(),
-                os.environ.get('SUDO_USER', ''))
+                os.environ.get('SUDO_USER', '')), file=sys.stdout)
             sys.stdout.flush()
 
         # Additional heuristics
@@ -952,7 +953,7 @@ class TestlibManager(object):
         #    time.sleep(0.5)
 
     def hello(self, msg):
-        print >>sys.stderr, "Hello from %s" % (msg)
+        print("Hello from %s" % (msg), file=sys.stderr)
 # The central instance
 manager = TestlibManager()
 
@@ -1000,7 +1001,7 @@ class TestlibCase(unittest.TestCase):
             # accept if the beginning of the line matches
             filetype = '^%s' % (filetype)
         result = 'File type reported by file: [%s], expected regex: [%s]\n' % (out, filetype)
-        self.assertNotEquals(None, re.search(filetype, out), result)
+        self.assertNotEqual(None, re.search(filetype, out), result)
 
     def yank_commonname_from_cert(self, certfile):
         '''Extract the commonName from a given PEM'''
@@ -1016,7 +1017,7 @@ class TestlibCase(unittest.TestCase):
 
     def announce(self, text):
         if self.my_verbosity:
-            print >>sys.stdout, "(%s) " % (text),
+            print("(%s) " % (text), end=' ', file=sys.stdout)
             sys.stdout.flush()
 
     def make_clean(self):
@@ -1078,7 +1079,7 @@ class TestlibCase(unittest.TestCase):
         '''Test a shell command doesn't match a specific exit code'''
         rc, report, out = self._testlib_shell_cmd(args, stdin=stdin, stdout=stdout, stderr=stderr)
         result = 'Got (unwanted) exit code %d\n' % rc
-        self.assertNotEquals(unwanted, rc, msg + result + report)
+        self.assertNotEqual(unwanted, rc, msg + result + report)
 
     def assertShellOutputContains(self, text, args, stdin=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, msg="", invert=False, expected=None):
         '''Test a shell command contains a specific output'''
@@ -1099,7 +1100,7 @@ class TestlibCase(unittest.TestCase):
         if not invert:
             self.assertEqual(text, out, msg + result + report)
         else:
-            self.assertNotEquals(text, out, msg + result + report)
+            self.assertNotEqual(text, out, msg + result + report)
         if expected is not None:
             result = 'Got exit code %d. Expected %d (%s)\n' % (rc, expected, " ".join(args))
             self.assertEqual(rc, expected, msg + result + report)
