@@ -1119,17 +1119,21 @@ class TestlibCase(unittest.TestCase):
         self.assertEqual(exists, os.path.exists(sysctl), sysctl)
         value = None
         if exists:
-            value = int(open(sysctl).read())
+            f = open(sysctl)
+            value = int(f.read())
             report = "%s is not %d: %d" % (sysctl, expected, value)
             if msg:
                 report += " (%s)" % (msg)
             self.assertEqual(value, expected, report)
+            f.close()
         return value
 
     def set_sysctl_value(self, path, desired):
         sysctl = '/proc/sys/%s' % (path)
         self.assertTrue(os.path.exists(sysctl),"%s does not exist" % (sysctl))
-        open(sysctl, 'w').write(str(desired))
+        f = open(sysctl, 'w')
+        f.write(str(desired))
+        f.close()
         self._test_sysctl_value(path, desired)
 
     def kernel_at_least(self, introduced):
