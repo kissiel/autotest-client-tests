@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #
 #    kernel-security.py regression testing script for kernel and
 #    security features

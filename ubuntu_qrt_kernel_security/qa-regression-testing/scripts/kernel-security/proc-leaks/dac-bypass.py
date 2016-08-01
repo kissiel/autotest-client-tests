@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # Demonstrates DAC bypass on /proc/$pid file descriptors across setuid exec
 # Author: Kees Cook <kees@ubuntu.com>
 # License: GPLv2

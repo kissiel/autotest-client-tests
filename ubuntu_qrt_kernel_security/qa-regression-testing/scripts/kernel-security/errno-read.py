@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import sys
 try:
     file(sys.argv[1]).read(int(sys.argv[2]))
